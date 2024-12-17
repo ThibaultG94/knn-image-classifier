@@ -1,32 +1,45 @@
 # KNN Image Classifier 🖼️
 
-A Python implementation of k-Nearest Neighbors algorithm for image classification. Built for educational purposes with step-by-step implementation of core machine learning concepts.
+Un classificateur d'images évolutif utilisant l'algorithme k-Nearest Neighbors. Conçu comme un projet éducatif qui évolue progressivement de tâches simples vers des défis plus complexes de reconnaissance d'images.
 
 ## Features
 
-- Simple yet powerful k-NN implementation for image classification
-- Pure Python/NumPy implementation for educational purposes
-- Easy-to-use interface similar to scikit-learn
-- Comprehensive visualization tools
-- Detailed performance metrics
+- Implémentation progressive de la reconnaissance d'images :
+
+  - Phase 1 : Reconnaissance de chiffres manuscrits (MNIST)
+  - Phase 2 : Extension aux lettres manuscrites
+  - Phase 3 : Formes et symboles simples
+  - Phases futures : Visages, dessins simples, mots manuscrits
+
+- Architecture modulaire et extensible :
+
+  - Pattern Strategy pour les méthodes de calcul de distance
+  - Approche orientée objet avec principes SOLID
+  - Facilement adaptable pour de nouvelles catégories d'images
+  - Visualisation des résultats et des k plus proches voisins
+
+- Interface intuitive :
+  - Zone de dessin interactive
+  - Affichage en temps réel des prédictions
+  - Visualisation des images similaires trouvées
 
 ## Installation
 
-1. Clone the repository:
+1. Cloner le repository :
 
 ```bash
 git clone https://github.com/ThibaultG94/knn-image-classifier.git
 cd knn-image-classifier
 ```
 
-2. Create a virtual environment:
+2. Créer un environnement virtuel :
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Sur Windows : venv\Scripts\activate
 ```
 
-3. Install dependencies:
+3. Installer les dépendances :
 
 ```bash
 pip install -r requirements.txt
@@ -37,57 +50,78 @@ pip install -r requirements.txt
 ```python
 from src.knn import ImageClassifier
 
-# Initialize classifier
+# Initialiser le classificateur
 classifier = ImageClassifier(k=3)
 
-# Train the model
+# Entraîner le modèle
 classifier.fit(training_images, labels)
 
-# Make predictions
+# Faire des prédictions
 prediction = classifier.predict(new_image)
 
-# Evaluate performance
+# Évaluer la performance
 accuracy = classifier.evaluate(test_images, test_labels)
 ```
 
-## Project Structure
+## Structure du Projet
 
 ```
 knn-image-classifier/
-├── data/               # Training and test data
-├── src/               # Source code
-│   ├── knn.py         # Core algorithm
-│   ├── image.py       # Image processing
-│   └── utils.py       # Utility functions
-├── tests/             # Unit tests
-├── notebooks/         # Jupyter notebooks
-└── requirements.txt   # Dependencies
+├── data/               # Données d'entraînement par catégorie
+│   ├── digits/        # Dataset MNIST
+│   ├── letters/       # Future extension
+│   └── symbols/       # Future extension
+├── src/
+│   ├── knn.py         # Classificateur principal
+│   ├── strategies/    # Implémentations des stratégies
+│   │   ├── distance.py
+│   │   └── preprocessing.py
+│   ├── image.py       # Traitement d'images
+│   └── utils.py       # Fonctions utilitaires
+├── tests/             # Tests unitaires
+├── notebooks/         # Jupyter notebooks de démonstration
+└── requirements.txt   # Dépendances
 ```
 
-## Development
+## Développement
 
-### Running Tests
+### Exécuter les Tests
 
 ```bash
 pytest tests/
 ```
 
-### Contributing
+### Contribuer
 
-1. Fork the repository
-2. Create your feature branch
-3. Make your changes
-4. Run the tests
-5. Submit a pull request
+1. Forker le repository
+2. Créer une branche pour votre fonctionnalité
+3. Implémenter et tester vos changements
+4. Créer une pull request
 
-## Technologies Used
+## Technologies Utilisées
 
 - Python 3.x
-- NumPy for computations
-- Pillow for image processing
-- Matplotlib for visualization
-- scikit-learn for evaluation metrics
+- NumPy pour les calculs matriciels
+- Pillow pour le traitement d'images
+- Matplotlib pour la visualisation
+- pytest pour les tests unitaires
+
+## Feuille de Route
+
+- [x] Architecture de base et pattern Strategy
+- [x] Implémentation du calcul de distance
+- [ ] Interface de dessin web
+- [ ] Support des chiffres manuscrits (MNIST)
+- [ ] Visualisation des k plus proches voisins
+- [ ] Extension aux lettres manuscrites
+- [ ] Support des formes et symboles
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Ce projet est sous licence MIT - voir le fichier LICENSE pour plus de détails.
+
+## Remerciements
+
+- La communauté open source Python
+- Les contributeurs du dataset MNIST
+- Tous les camarades qui participent au développement
