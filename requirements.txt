@@ -1,0 +1,5 @@
+numpy>=1.21.0        # Pour les calculs matriciels et la manipulation des données
+Pillow>=9.0.0       # Pour le traitement d'images
+matplotlib>=3.5.0    # Pour la visualisation des résultats
+scikit-learn>=1.0.0  # Pour les métriques d'évaluation
+pytest>=7.0.0       # Pour les tests unitaires

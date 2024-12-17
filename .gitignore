@@ -1,0 +1,28 @@
+# Environnement virtuel
+venv/
+
+# Fichiers Python compilés
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Fichiers de test
+.pytest_cache/
+.coverage
+
+# Fichiers système
+.DS_Store
+.vscode/
+.idea/
+
+# Notebooks checkpoints
+notebooks/.ipynb_checkpoints/
+
+# Fichiers de données temporaires
+*.log
+*.tmp
