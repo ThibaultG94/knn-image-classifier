@@ -63,3 +63,33 @@ class ImageClassifier:
         
         # Retourner la classe qui a reçu le plus de votes
         return max(votes.items(), key=lambda x: x[1])[0]
+    
+    def evaluate(self, test_images, test_labels):
+        """
+        Évalue la performance du classificateur sur un ensemble de test.
+        
+        Args:
+            test_images: Liste ou tableau des images de test
+            test_labels: Liste ou tableau des labels de test
+            
+        Returns:
+            La précision du modèle (float entre 0 et 1)
+        """
+        if len(test_images) != len(test_labels):
+            raise ValueError("Le nombre d'images et d'étiquettes doit être identique.")
+        if not test_images or not test_labels:
+            raise ValueError("Les données de test ne peuvent pas être vides.")
+        
+        correct = 0
+        total = len(test_labels)
+        
+        for image, true_label in zip(test_images, test_labels):
+            try:
+                predicted = self.predict(image)
+                if predicted == true_label:
+                    correct += 1
+            except Exception as e:
+                print(f"Erreur lors de la prédiction pour une image : {e}")
+        
+        accuracy = correct / total
+        return accuracy

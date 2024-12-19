@@ -6,151 +6,159 @@
 
 - Structure du projet créée
 - Environnement virtuel configuré
-- Pattern Strategy implémenté
-- Calcul de distance euclidienne
+- Pattern Strategy implémenté pour :
+  - Calcul de distance (EuclideanDistance)
+  - Prétraitement des images (MNISTPreprocessing)
+- Implémentation du classificateur :
+  - Méthode fit() avec parallélisation
+  - Méthode predict() avec système de vote
+  - Gestion des erreurs et validations
+- Normalisation des images
 
 ### 🏃 En Cours
 
-- Implémentation de la méthode predict()
 - Développement des tests unitaires
-- Mise en place du prétraitement des images
+- Script de démonstration avec MNIST
+- Optimisation des performances
 
 ### ⏳ À Venir
 
-- Interface de dessin web
-- Intégration du dataset MNIST
+- Interface web Django
 - Visualisation des résultats
+- Extension à d'autres types d'images
 
 ## Plan de Développement Détaillé
 
-### Phase 1 : Reconnaissance de Chiffres
+### Phase 1 : Tests et Validation
 
-#### Étape 1 : Implémentation Core
+#### Étape 1 : Tests Unitaires
 
-- [ ] Finaliser la méthode predict()
-- [ ] Ajouter la normalisation des images
-- [ ] Implémenter la validation croisée
-- [ ] Créer une suite de tests complète
+- [ ] Tests du prétraitement d'images
+- [ ] Tests des calculs de distance
+- [ ] Tests du système de vote
+- [ ] Tests de bout en bout
 
-#### Étape 2 : Dataset MNIST
+#### Étape 2 : Intégration MNIST
 
-- [ ] Télécharger et préparer le dataset
-- [ ] Créer des utilitaires de chargement
-- [ ] Implémenter le prétraitement
-- [ ] Valider avec des tests de bout en bout
+- [ ] Téléchargement du dataset
+- [ ] Script de démonstration
+- [ ] Mesures de performance
+- [ ] Optimisations si nécessaire
 
-#### Étape 3 : Interface Utilisateur
+### Phase 2 : Interface Web
 
-- [ ] Créer l'interface de dessin
-- [ ] Implémenter la capture du dessin
-- [ ] Ajouter la visualisation des prédictions
-- [ ] Intégrer l'affichage des voisins similaires
+#### Étape 1 : Préparation
 
-### Phase 2 : Extension aux Lettres
+- [ ] Création du projet Django
+- [ ] Configuration de l'environnement
+- [ ] Design de l'interface
 
-#### Préparation
+#### Étape 2 : Développement
 
-- [ ] Identifier les datasets appropriés
-- [ ] Adapter le prétraitement si nécessaire
-- [ ] Optimiser les performances
-
-#### Implémentation
-
-- [ ] Étendre le classificateur
-- [ ] Améliorer la précision
-- [ ] Ajouter de nouveaux tests
-
-### Phase 3 : Formes et Symboles
-
-#### Développement
-
-- [ ] Créer un dataset personnalisé
-- [ ] Adapter les métriques de distance
-- [ ] Optimiser pour les nouvelles catégories
+- [ ] Implémentation du canvas de dessin
+- [ ] Intégration du classificateur
+- [ ] Visualisation des résultats
 
 ## Notes Techniques Importantes
 
-### Architecture
+### Architecture Actuelle
 
-Le projet utilise plusieurs patterns de conception :
+1. Classificateur Principal (`knn.py`)
 
-1. Strategy Pattern
+   - Pattern Strategy pour la flexibilité
+   - Parallélisation du prétraitement
+   - Système de vote pour les prédictions
 
-   - Permet de changer les algorithmes de distance
-   - Facilite l'ajout de nouvelles méthodes
-   - Maintient le code modulaire
+2. Prétraitement (`preprocessing.py`)
 
-2. Single Responsibility
+   - Normalisation des images
+   - Support de multiples formats
+   - Conversion en niveaux de gris
 
-   - Chaque classe a une responsabilité unique
-   - Facilite les tests et la maintenance
-   - Permet une évolution indépendante
+3. Calcul de Distance (`distance.py`)
+   - Distance euclidienne implémentée
+   - Extensible pour d'autres métriques
 
-3. Dependency Injection
-   - Les stratégies sont injectées dans le classificateur
-   - Facilite les tests et le mock
-   - Permet de changer le comportement dynamiquement
-
-### Optimisations Prévues
+### Optimisations Réalisées
 
 1. Performance
 
-   - Vectorisation des calculs avec NumPy
-   - Mise en cache des résultats intermédiaires
-   - Parallélisation possible des calculs de distance
+   - ThreadPoolExecutor pour le prétraitement
+   - heapq pour la sélection des k plus proches
+   - Validation précoce des paramètres
 
-2. Mémoire
-   - Gestion efficace des grands datasets
-   - Nettoyage des données en mémoire
-   - Utilisation de générateurs quand possible
+2. Robustesse
+   - Gestion complète des erreurs
+   - Validations des entrées
+   - Support de différents formats d'images
 
-### Tests
+### Tests à Implémenter
 
 1. Tests Unitaires
 
-   - Chaque composant testé isolément
-   - Coverage cible : > 80%
-   - Tests de performance inclus
+   - Validation du prétraitement
+   - Vérification des distances
+   - Tests des cas limites
 
 2. Tests d'Intégration
-   - Workflow complet testé
-   - Tests de bout en bout
-   - Validation avec données réelles
+   - Workflow complet
+   - Performance sur MNIST
+   - Gestion des erreurs
 
-## Problèmes Connus et Solutions
+## Problèmes Résolus
 
-1. Performance
+1. Parallélisation
 
-   - Le calcul de distance peut être lent sur de grands datasets
-   - Solution : Optimisation et parallélisation prévues
+   - Implémentation de ThreadPoolExecutor
+   - Amélioration des performances de prétraitement
 
-2. Mémoire
-   - Les grands datasets peuvent consommer beaucoup de RAM
-   - Solution : Chargement par lots prévu
+2. Normalisation
+   - Standardisation des images
+   - Support de multiples formats d'entrée
+
+## Prochaines Étapes Prioritaires
+
+1. Tests
+
+   - Développer une suite de tests complète
+   - Valider avec MNIST
+
+2. Documentation
+
+   - Documenter les choix d'implémentation
+   - Ajouter des exemples d'utilisation
+
+3. Interface
+   - Commencer le développement Django
+   - Créer l'interface de dessin
 
 ## Ressources
 
 ### Documentation
 
-- NumPy : https://numpy.org/doc/
-- Dataset MNIST : http://yann.lecun.com/exdb/mnist/
-- Scikit-learn (référence) : https://scikit-learn.org/
+- ThreadPoolExecutor : https://docs.python.org/3/library/concurrent.futures.html
+- heapq : https://docs.python.org/3/library/heapq.html
+- PIL : https://pillow.readthedocs.io/
 
-### Outils de Développement
+### Outils
 
-- VS Code avec extensions Python
-- Jupyter pour les prototypes
-- Black pour le formatage
-- pylint pour l'analyse statique
+- Visual Studio Code
+- pytest pour les tests
+- Django pour l'interface web
 
-## Prochaine Réunion de Développement
+## Points de Discussion
 
-Points à discuter :
+1. Choix des hyperparamètres
 
-1. Choix du framework web
-2. Stratégie de déploiement
-3. Planning des releases
+   - Valeur optimale de k
+   - Taille des images
+   - Méthode de normalisation
+
+2. Améliorations futures
+   - Autres métriques de distance
+   - Optimisation mémoire
+   - Nouvelles catégories d'images
 
 ---
 
-Dernière mise à jour : 17 décembre 2024
+Dernière mise à jour : 19 décembre 2024
