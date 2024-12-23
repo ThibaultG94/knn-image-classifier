@@ -25,139 +25,134 @@
 
 ### 🏃 En Cours
 
-- Script de démonstration avec MNIST
-- Préparation de l'intégration Django
+- Préparation du dataset MNIST
+- Entraînement et sauvegarde du modèle
 
 ### ⏳ À Venir
 
-- Interface web Django :
-  - Création du projet
-  - Configuration de l'environnement
-  - Design de l'interface
-  - Canvas de dessin
-- Visualisation des résultats :
-  - Affichage des k plus proches voisins
-  - Graphiques de performance
-  - Interface de test interactive
+- Portfolio Web Django :
+  - Création de la structure du projet
+  - Intégration du KNN comme premier projet
+  - Pages de présentation des projets
+  - Interface interactive pour les démos
 
 ## Plan de Développement Détaillé
 
-### Phase 1 : MNIST et Démonstration
+### Phase 1 : Finalisation du Classificateur
 
-#### Étape 1 : Intégration MNIST
+#### Étape 1 : Préparation MNIST
 
 - [ ] Script de téléchargement du dataset
-- [ ] Script de démonstration basique
-- [ ] Tests de performance sur le dataset complet
+- [ ] Prétraitement des données
+- [ ] Division train/test
+
+#### Étape 2 : Entraînement
+
+- [ ] Entraînement sur MNIST complet
+- [ ] Évaluation des performances
+- [ ] Sauvegarde du modèle entraîné
 - [ ] Documentation des résultats
 
-#### Étape 2 : Optimisations
+### Phase 2 : Portfolio Django
 
-- [ ] Profilage des performances
-- [ ] Optimisation de la mémoire
-- [ ] Ajustement des hyperparamètres
-- [ ] Documentation des améliorations
+#### Étape 1 : Structure de Base
 
-### Phase 2 : Interface Web
-
-#### Étape 1 : Configuration
-
-- [ ] Mise en place du projet Django
-- [ ] Configuration des routes
+- [ ] Création du projet Django
+- [ ] Organisation des apps (core, projects)
 - [ ] Templates de base
-- [ ] Gestion des assets statiques
+- [ ] Navigation principale
 
-#### Étape 2 : Fonctionnalités
+#### Étape 2 : Intégration KNN
 
-- [ ] Interface de dessin avec Canvas
-- [ ] Upload d'images
-- [ ] Affichage des prédictions
-- [ ] Visualisation des voisins
+- [ ] Import du modèle entraîné
+- [ ] API pour les prédictions
+- [ ] Interface de dessin
+- [ ] Visualisation des résultats
+
+## Architecture Prévue
+
+### Portfolio Django
+
+```
+ai_portfolio/
+├── manage.py
+├── portfolio/          # Config Django
+│   ├── settings.py
+│   └── urls.py
+├── core/              # App principale
+│   ├── templates/
+│   │   ├── home.html     # Présentation des projets
+│   │   └── about.html    # À propos
+│   └── views.py
+└── projects/          # App pour les projets IA
+    ├── knn_digits/    # Notre KNN
+    ├── future_project_2/
+    └── future_project_3/
+```
 
 ## Notes Techniques
 
-### Architecture
+### Classificateur KNN
 
-1. Classificateur Principal (`knn.py`)
+1. Points forts actuels :
 
-   - Pattern Strategy pour flexibilité
-   - Parallélisation via ThreadPoolExecutor
-   - Système de vote pondéré
+   - Pattern Strategy bien implémenté
+   - Tests complets
+   - Parallélisation efficace
 
-2. Prétraitement (`preprocessing.py`)
+2. À améliorer :
+   - Gestion de la mémoire pour MNIST complet
+   - Système de sauvegarde/chargement du modèle
+   - Documentation des hyperparamètres
 
-   - Normalisation robuste
-   - Support multi-formats
-   - Pipeline configurable
+### Portfolio Web
 
-3. Calcul de Distance (`distance.py`)
-   - Distance euclidienne optimisée
-   - Extensible pour nouvelles métriques
+1. Priorités :
 
-### Tests
+   - Design responsive
+   - Interface intuitive
+   - Démos interactives
+   - Documentation claire
 
-- Tests unitaires : ✅
-- Tests performance : ✅
-- Tests intégration : ✅
+2. Points d'attention :
+   - Performance avec modèles chargés
+   - Gestion des erreurs utilisateur
+   - Feedback visuel
+   - Temps de réponse
 
-À compléter :
-
-- Tests sur MNIST réel
-- Tests de l'interface web
-- Tests de charge
-
-### Points d'Attention
-
-1. Performance
-
-   - Optimiser la parallélisation
-   - Gérer la mémoire pour gros datasets
-   - Mettre en cache les résultats fréquents
-
-2. Interface Web
-
-   - Responsive design
-   - Gestion asynchrone
-   - Feedback utilisateur
-
-3. Sécurité
-   - Validation des entrées
-   - Rate limiting
-   - Protection CSRF
-
-## Prochaines Étapes Prioritaires
+## Prochaines Étapes Immédiates
 
 1. MNIST
 
-   - Téléchargement et préparation
-   - Tests de précision
-   - Benchmarking
+   - Script de téléchargement
+   - Entraînement complet
+   - Mesures de performance
 
-2. Django
-
-   - Structure du projet
-   - Premiers templates
-   - API basique
-
-3. Documentation
+2. Documentation
+   - MAJ README
    - Guide d'installation
-   - Documentation API
-   - Exemples d'utilisation
+   - Guide d'utilisation
 
 ## Ressources
 
+### MNIST
+
+- Site officiel : yann.lecun.com/exdb/mnist/
+- Format des données
+- Benchmark de référence
+
 ### Outils
 
-- Visual Studio Code
-- pytest pour tests
+- Python 3.10+
+- NumPy pour calculs
+- Pytest pour tests
 - Django pour web
 - Pillow pour images
 
 ### Documentation
 
-- Numpy : numpy.org
-- ThreadPoolExecutor : docs.python.org
-- Pillow : pillow.readthedocs.io
+- NumPy : numpy.org
+- Pytest : docs.pytest.org
 - Django : djangoproject.com
 
 ---
