@@ -14,151 +14,152 @@
   - Méthode predict() avec système de vote
   - Gestion des erreurs et validations
 - Normalisation des images
+- Suite de tests complète :
+  - Tests unitaires (prétraitement, distance, classificateur)
+  - Tests de performance (parallélisation)
+  - Tests d'intégration (workflow complet)
+- Structure de test organisée :
+  - /unit pour les tests unitaires
+  - /integration pour les tests end-to-end
+  - /performance pour les benchmarks
 
 ### 🏃 En Cours
 
-- Développement des tests unitaires
 - Script de démonstration avec MNIST
-- Optimisation des performances
+- Préparation de l'intégration Django
 
 ### ⏳ À Venir
 
-- Interface web Django
-- Visualisation des résultats
-- Extension à d'autres types d'images
+- Interface web Django :
+  - Création du projet
+  - Configuration de l'environnement
+  - Design de l'interface
+  - Canvas de dessin
+- Visualisation des résultats :
+  - Affichage des k plus proches voisins
+  - Graphiques de performance
+  - Interface de test interactive
 
 ## Plan de Développement Détaillé
 
-### Phase 1 : Tests et Validation
+### Phase 1 : MNIST et Démonstration
 
-#### Étape 1 : Tests Unitaires
+#### Étape 1 : Intégration MNIST
 
-- [ ] Tests du prétraitement d'images
-- [ ] Tests des calculs de distance
-- [ ] Tests du système de vote
-- [ ] Tests de bout en bout
+- [ ] Script de téléchargement du dataset
+- [ ] Script de démonstration basique
+- [ ] Tests de performance sur le dataset complet
+- [ ] Documentation des résultats
 
-#### Étape 2 : Intégration MNIST
+#### Étape 2 : Optimisations
 
-- [ ] Téléchargement du dataset
-- [ ] Script de démonstration
-- [ ] Mesures de performance
-- [ ] Optimisations si nécessaire
+- [ ] Profilage des performances
+- [ ] Optimisation de la mémoire
+- [ ] Ajustement des hyperparamètres
+- [ ] Documentation des améliorations
 
 ### Phase 2 : Interface Web
 
-#### Étape 1 : Préparation
+#### Étape 1 : Configuration
 
-- [ ] Création du projet Django
-- [ ] Configuration de l'environnement
-- [ ] Design de l'interface
+- [ ] Mise en place du projet Django
+- [ ] Configuration des routes
+- [ ] Templates de base
+- [ ] Gestion des assets statiques
 
-#### Étape 2 : Développement
+#### Étape 2 : Fonctionnalités
 
-- [ ] Implémentation du canvas de dessin
-- [ ] Intégration du classificateur
-- [ ] Visualisation des résultats
+- [ ] Interface de dessin avec Canvas
+- [ ] Upload d'images
+- [ ] Affichage des prédictions
+- [ ] Visualisation des voisins
 
-## Notes Techniques Importantes
+## Notes Techniques
 
-### Architecture Actuelle
+### Architecture
 
 1. Classificateur Principal (`knn.py`)
 
-   - Pattern Strategy pour la flexibilité
-   - Parallélisation du prétraitement
-   - Système de vote pour les prédictions
+   - Pattern Strategy pour flexibilité
+   - Parallélisation via ThreadPoolExecutor
+   - Système de vote pondéré
 
 2. Prétraitement (`preprocessing.py`)
 
-   - Normalisation des images
-   - Support de multiples formats
-   - Conversion en niveaux de gris
+   - Normalisation robuste
+   - Support multi-formats
+   - Pipeline configurable
 
 3. Calcul de Distance (`distance.py`)
-   - Distance euclidienne implémentée
-   - Extensible pour d'autres métriques
+   - Distance euclidienne optimisée
+   - Extensible pour nouvelles métriques
 
-### Optimisations Réalisées
+### Tests
+
+- Tests unitaires : ✅
+- Tests performance : ✅
+- Tests intégration : ✅
+
+À compléter :
+
+- Tests sur MNIST réel
+- Tests de l'interface web
+- Tests de charge
+
+### Points d'Attention
 
 1. Performance
 
-   - ThreadPoolExecutor pour le prétraitement
-   - heapq pour la sélection des k plus proches
-   - Validation précoce des paramètres
+   - Optimiser la parallélisation
+   - Gérer la mémoire pour gros datasets
+   - Mettre en cache les résultats fréquents
 
-2. Robustesse
-   - Gestion complète des erreurs
-   - Validations des entrées
-   - Support de différents formats d'images
+2. Interface Web
 
-### Tests à Implémenter
+   - Responsive design
+   - Gestion asynchrone
+   - Feedback utilisateur
 
-1. Tests Unitaires
-
-   - Validation du prétraitement
-   - Vérification des distances
-   - Tests des cas limites
-
-2. Tests d'Intégration
-   - Workflow complet
-   - Performance sur MNIST
-   - Gestion des erreurs
-
-## Problèmes Résolus
-
-1. Parallélisation
-
-   - Implémentation de ThreadPoolExecutor
-   - Amélioration des performances de prétraitement
-
-2. Normalisation
-   - Standardisation des images
-   - Support de multiples formats d'entrée
+3. Sécurité
+   - Validation des entrées
+   - Rate limiting
+   - Protection CSRF
 
 ## Prochaines Étapes Prioritaires
 
-1. Tests
+1. MNIST
 
-   - Développer une suite de tests complète
-   - Valider avec MNIST
+   - Téléchargement et préparation
+   - Tests de précision
+   - Benchmarking
 
-2. Documentation
+2. Django
 
-   - Documenter les choix d'implémentation
-   - Ajouter des exemples d'utilisation
+   - Structure du projet
+   - Premiers templates
+   - API basique
 
-3. Interface
-   - Commencer le développement Django
-   - Créer l'interface de dessin
+3. Documentation
+   - Guide d'installation
+   - Documentation API
+   - Exemples d'utilisation
 
 ## Ressources
-
-### Documentation
-
-- ThreadPoolExecutor : https://docs.python.org/3/library/concurrent.futures.html
-- heapq : https://docs.python.org/3/library/heapq.html
-- PIL : https://pillow.readthedocs.io/
 
 ### Outils
 
 - Visual Studio Code
-- pytest pour les tests
-- Django pour l'interface web
+- pytest pour tests
+- Django pour web
+- Pillow pour images
 
-## Points de Discussion
+### Documentation
 
-1. Choix des hyperparamètres
-
-   - Valeur optimale de k
-   - Taille des images
-   - Méthode de normalisation
-
-2. Améliorations futures
-   - Autres métriques de distance
-   - Optimisation mémoire
-   - Nouvelles catégories d'images
+- Numpy : numpy.org
+- ThreadPoolExecutor : docs.python.org
+- Pillow : pillow.readthedocs.io
+- Django : djangoproject.com
 
 ---
 
-Dernière mise à jour : 19 décembre 2024
+Dernière mise à jour : 23 décembre 2024
