@@ -1,5 +1,4 @@
-from .strategies.distance import EuclideanDistance
-from .strategies.preprocessing import MNISTPreprocessing
+from .strategies import EuclideanDistance, MNISTPreprocessing
 from concurrent.futures import ThreadPoolExecutor
 import heapq
 
