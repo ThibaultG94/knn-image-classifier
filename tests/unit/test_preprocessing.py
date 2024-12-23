@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from PIL import Image
-from src.strategies.preprocessing import MNISTPreprocessing
+from src import MNISTPreprocessing
 
 class TestMNISTPreprocessing:
     @pytest.fixture

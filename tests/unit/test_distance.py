@@ -1,4 +1,4 @@
-from src.strategies.distance import EuclideanDistance
+from src import EuclideanDistance
 import numpy as np
 
 class TestEuclideanDistance:

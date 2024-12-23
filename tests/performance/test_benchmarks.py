@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from src.knn import ImageClassifier
+from src import ImageClassifier
 import time
 
 class TestPerformance:

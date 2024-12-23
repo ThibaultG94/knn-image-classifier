@@ -1,8 +1,6 @@
 import pytest
 import numpy as np
-from src.knn import ImageClassifier
-from src.strategies.preprocessing import MNISTPreprocessing
-from src.strategies.distance import EuclideanDistance
+from src import ImageClassifier, EuclideanDistance, MNISTPreprocessing
 
 class TestWorkflow:
     @pytest.fixture
