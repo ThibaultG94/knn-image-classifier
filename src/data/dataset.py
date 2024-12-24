@@ -19,9 +19,15 @@ class Dataset(ABC):
         # Crée le répertoire si nécessaire
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
-        # Template method pattern
-        if download and not self._check_exists():
-            self._download()
+        if not self._check_exists():
+            if download:
+                self._download()
+            else:
+                raise FileNotFoundError(
+                    "Les fichiers de données n'existent pas. "
+                    "Utilisez download=True pour les télécharger."
+                )
+        
         self._load_data()
 
     @abstractmethod

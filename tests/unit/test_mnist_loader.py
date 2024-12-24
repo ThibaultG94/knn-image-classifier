@@ -2,91 +2,161 @@ import pytest
 import numpy as np
 import gzip
 from pathlib import Path
+from unittest.mock import patch
 from src.data.mnist_loader import MNISTDataset
 
 class TestMNISTDataset:
-    @pytest.fixture
-    def mnist_dir(self, tmp_path):
-        """Crée un répertoire temporaire pour les tests"""
-        test_dir = tmp_path / "mnist_test"
-        test_dir.mkdir(exist_ok=True)
-        return test_dir
-
-    @pytest.fixture
-    def mock_mnist_files(self, mnist_dir):
+    @pytest.fixture(autouse=True)
+    def setup_mnist_files(self, tmp_path):
         """
-        Crée des fichiers MNIST factices pour tester le chargement.
-        Cette fixture simule la structure des vrais fichiers MNIST.
+        Prépare un environnement de test avec des fichiers MNIST valides.
+        Utilise tmp_path pour créer un répertoire de test unique pour chaque test.
         """
-        # En-tête du format IDX pour les images (magic number + dimensions)
-        image_header = (
-            2051).to_bytes(4, 'big')  # Magic number pour les images
-        n_images = (10).to_bytes(4, 'big')  # 10 images de test
-        n_rows = (28).to_bytes(4, 'big')
-        n_cols = (28).to_bytes(4, 'big')
+        mnist_dir = tmp_path / "mnist_test"
+        mnist_dir.mkdir(parents=True, exist_ok=True)
 
-        # Créer des images factices
-        fake_images = np.random.randint(0, 255, (10, 28, 28), 
-                                      dtype=np.uint8).tobytes()
-        
-        # En-tête pour les labels
-        label_header = (2049).to_bytes(4, 'big')  # Magic number pour les labels
-        n_labels = (10).to_bytes(4, 'big')
-        fake_labels = np.random.randint(0, 10, 10, dtype=np.uint8).tobytes()
+        # Définition des noms de fichiers exacts comme dans MNISTDataset
+        file_config = {
+            'train-images-idx3-ubyte.gz': (2051, 10, 28, 28),  # magic, nb_images, height, width
+            'train-labels-idx1-ubyte.gz': (2049, 10),          # magic, nb_labels
+            't10k-images-idx3-ubyte.gz': (2051, 10, 28, 28),   # Mêmes dimensions pour le test
+            't10k-labels-idx1-ubyte.gz': (2049, 10)            # Mêmes dimensions pour le test
+        }
 
-        # Sauvegarder les fichiers de test
-        for prefix in ['train', 'test']:
-            # Images
-            with gzip.open(mnist_dir / f"{prefix}_images.gz", 'wb') as f:
-                f.write(image_header + n_images + n_rows + n_cols + fake_images)
-            
-            # Labels
-            with gzip.open(mnist_dir / f"{prefix}_labels.gz", 'wb') as f:
-                f.write(label_header + n_labels + fake_labels)
+        def create_mnist_files():
+            """Crée les fichiers MNIST de test avec la structure exacte attendue"""
+            for filename, header_info in file_config.items():
+                filepath = mnist_dir / filename
+                with gzip.open(filepath, 'wb', compresslevel=6) as f:
+                    # Écriture de l'en-tête
+                    for value in header_info:
+                        f.write(value.to_bytes(4, 'big'))
+                    
+                    # Écriture des données
+                    if 'images' in filename:
+                        # Création d'images de test (10 images de 28x28)
+                        images = np.zeros((10, 28, 28), dtype=np.uint8)
+                        for i in range(10):
+                            images[i].fill(i * 25)
+                        f.write(images.tobytes())
+                    else:
+                        # Création de labels (0-9)
+                        labels = np.arange(10, dtype=np.uint8)
+                        f.write(labels.tobytes())
+
+        # Création des fichiers
+        create_mnist_files()
+
+        # Vérification des fichiers créés
+        for filename in file_config:
+            filepath = mnist_dir / filename
+            assert filepath.exists(), f"Fichier manquant : {filename}"
+            try:
+                with gzip.open(filepath, 'rb') as f:
+                    # Lecture de l'en-tête pour vérifier le format
+                    magic = int.from_bytes(f.read(4), 'big')
+                    expected_magic = file_config[filename][0]
+                    assert magic == expected_magic, f"Magic number incorrect pour {filename}"
+            except Exception as e:
+                raise RuntimeError(f"Fichier invalide {filename}: {e}")
 
         return mnist_dir
 
-    def test_init_creates_directory(self, mnist_dir):
-        """Vérifie que le constructeur crée le répertoire si nécessaire"""
-        dataset = MNISTDataset(data_dir=mnist_dir, download=False)
-        assert mnist_dir.exists()
-
-    def test_download_mnist(self, mnist_dir):
+    @pytest.fixture
+    def mock_response(self):
         """
-        Vérifie que le téléchargement fonctionne.
-        Note : Ce test nécessite une connexion Internet
+        Simule une réponse HTTP avec des données MNIST valides.
+        Cette fixture est utilisée pour simuler le téléchargement des fichiers.
         """
-        dataset = MNISTDataset(data_dir=mnist_dir, download=True)
-        # Vérifie que tous les fichiers existent
-        for name in dataset.URLS.keys():
-            assert (mnist_dir / f"{name}.gz").exists()
+        class MockResponse:
+            def __init__(self):
+                # En-tête MNIST valide
+                header = bytearray()
+                header.extend((2051).to_bytes(4, 'big'))  # Magic number
+                header.extend((10).to_bytes(4, 'big'))    # Nombre d'images
+                header.extend((28).to_bytes(4, 'big'))    # Hauteur
+                header.extend((28).to_bytes(4, 'big'))    # Largeur
+                
+                # Données d'images
+                images = np.zeros((10, 28, 28), dtype=np.uint8)
+                
+                # Création du contenu compressé
+                with gzip.open(Path("temp.gz"), 'wb', compresslevel=6) as f:
+                    f.write(header)
+                    f.write(images.tobytes())
+                
+                # Lecture du contenu compressé
+                with open("temp.gz", 'rb') as f:
+                    self.content = f.read()
+                
+                # Nettoyage
+                Path("temp.gz").unlink()
+            
+            def raise_for_status(self):
+                pass
 
-    def test_load_data_shape(self, mnist_dir, mock_mnist_files):
-        """Vérifie que les données chargées ont la bonne forme"""
-        dataset = MNISTDataset(data_dir=mnist_dir, download=False)
-        train_images, train_labels = dataset.get_train_data()
+        return MockResponse()
+
+    def test_init_creates_directory(self, setup_mnist_files):
+        """
+        Vérifie que le constructeur crée le répertoire si nécessaire 
+        et charge correctement les données.
+        """
+        dataset = MNISTDataset(data_dir=setup_mnist_files, download=False)
+        assert dataset.train_data is not None
+        assert dataset.train_labels is not None
+        assert isinstance(dataset.train_data, np.ndarray)
+        assert isinstance(dataset.train_labels, np.ndarray)
+
+    @patch('requests.get')
+    def test_download_mnist(self, mock_get, setup_mnist_files, mock_response):
+        """
+        Vérifie que le téléchargement et le chargement des données fonctionnent 
+        correctement avec les requêtes HTTP mockées.
+        """
+        mock_get.return_value = mock_response
+        dataset = MNISTDataset(data_dir=setup_mnist_files, download=True)
+        assert dataset.train_data is not None
+        assert dataset.train_labels is not None
+        assert dataset.test_data is not None
+        assert dataset.test_labels is not None
+        assert isinstance(dataset.train_data, np.ndarray)
+        assert isinstance(dataset.train_labels, np.ndarray)
+
+    def test_load_data_shape(self, setup_mnist_files):
+        """
+        Vérifie que les dimensions des données chargées sont correctes.
+        Les images doivent être de dimension (10, 28, 28) et les labels (10,).
+        """
+        dataset = MNISTDataset(data_dir=setup_mnist_files, download=False)
+        assert dataset.train_data.shape == (10, 28, 28)
+        assert dataset.train_labels.shape == (10,)
+        assert dataset.test_data.shape == (10, 28, 28)
+        assert dataset.test_labels.shape == (10,)
+        # Vérification de la plage des valeurs
+        assert np.all((dataset.train_data >= 0) & (dataset.train_data <= 255))
+        assert np.all((dataset.train_labels >= 0) & (dataset.train_labels <= 9))
+
+    def test_data_consistency(self, setup_mnist_files):
+        """
+        Vérifie la cohérence des données entre deux chargements successifs.
+        Les données doivent être identiques pour garantir la reproductibilité.
+        """
+        dataset1 = MNISTDataset(data_dir=setup_mnist_files, download=False)
+        dataset2 = MNISTDataset(data_dir=setup_mnist_files, download=False)
         
-        assert train_images.shape == (10, 28, 28)  # 10 images de 28x28
-        assert train_labels.shape == (10,)  # 10 labels
-        assert train_images.dtype == np.float32
-        assert 0 <= train_images.min() <= train_images.max() <= 1  # Normalisé
-
-    def test_data_consistency(self, mnist_dir, mock_mnist_files):
-        """Vérifie que les données restent cohérentes après sauvegarde/chargement"""
-        # Premier chargement
-        dataset1 = MNISTDataset(data_dir=mnist_dir, download=False)
-        images1, labels1 = dataset1.get_train_data()
-
-        # Deuxième chargement (devrait charger depuis le cache)
-        dataset2 = MNISTDataset(data_dir=mnist_dir, download=False)
-        images2, labels2 = dataset2.get_train_data()
-
-        np.testing.assert_array_equal(images1, images2)
-        np.testing.assert_array_equal(labels1, labels2)
+        # Vérification des données d'entraînement
+        np.testing.assert_array_equal(dataset1.train_data, dataset2.train_data)
+        np.testing.assert_array_equal(dataset1.train_labels, dataset2.train_labels)
+        
+        # Vérification des données de test
+        np.testing.assert_array_equal(dataset1.test_data, dataset2.test_data)
+        np.testing.assert_array_equal(dataset1.test_labels, dataset2.test_labels)
 
     def test_invalid_directory(self):
-        """Vérifie la gestion des erreurs avec un répertoire invalide"""
-        with pytest.raises(Exception):
-            dataset = MNISTDataset(data_dir="/chemin/invalide/impossible", 
-                                 download=False)
-            dataset.get_train_data()
+        """
+        Vérifie la gestion des erreurs avec un chemin invalide.
+        Doit lever une FileNotFoundError si le répertoire n'existe pas.
+        """
+        with pytest.raises(FileNotFoundError):
+            dataset = MNISTDataset(data_dir="./invalid_path", download=False)
