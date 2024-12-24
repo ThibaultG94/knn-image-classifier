@@ -25,9 +25,12 @@ class MNISTDataset(Dataset):
 
     def _check_exists(self) -> bool:
         """Vérifie si tous les fichiers MNIST sont déjà téléchargés"""
+        # Extrait les noms de fichiers des URLs (après le dernier /)
+        expected_files = [url.split('/')[-1] for url in self.URLS.values()]
+        
         files_exist = all(
-            (self.data_dir / f"{name}.gz").exists()
-            for name in self.URLS.keys()
+            (self.data_dir / filename).exists()
+            for filename in expected_files
         )
         return files_exist and (
             self.train_data is not None or 
